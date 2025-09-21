@@ -1,0 +1,112 @@
+moongodb의 기본 명령어
+moongdb에서 가장 기본적인 데이터를 다루는 명령어중에서 CRUD가 있다
+
+1. Create (생성) : 새로운 문서를 컬렉션에 추가하는 작업입니다.
+
+매서드 : 메서드: db.collection.insertOne() 또는 db.collection.insertMany()	
+
+단일 문서를 추가하는 법.  
+ex)                        
+db.users.insertOne({
+  	name: "Moon",
+  	age: 30,                             //이름이 moon 나이는 30 을 추가해라
+});
+
+여러 문서 추가하는 법
+ex)
+db.users.insertMany([
+	  { name: "Moon", age: 30 },
+ 	 { name: "go", age: 15 }
+]);
+
+2. Read (조회) : 컬렉션에서 원하는 문서를 검색하는 작업입니다.
+
+메서드: db.collection.find() 또는 db.collection.findOne()
+
+모든 문서 조회:
+db.users.find();     //전체 조회
+db.users.find({name: "moongo"})  //이름이 moongo인 사람을 찾아라
+db.users.findOne({age: {$gt: 25}})    //나이가 25 초과인 사람  ($gt는 초과)
+
+3.Update (수정) : 기존 문서의 데이터를 변경하는 작업입니다.
+
+메서드: db.collection.updateOne() 또는 db.collection.updateMany()
+
+단일 문서 수정:
+// 이름이 "Moon"인 문서의 나이를 31로 변경
+db.users.updateOne(
+	  { name: "Moon" }, // 조건
+ 	 { $set: { age: 31 } }  // 변경할 내용
+);
+
+여러 문서 수정:
+// 모든 'status'가 "active"인 문서의 status를 "online"으로 변경
+db.users.updateMany(
+	  { status: "active" },	//조건
+ 	 { $set: { status: "online" } }	//변견할 내용
+);
+
+4. Delete (삭제) : 컬렉션에서 문서를 제거하는 작업입니다.
+
+메서드: db.collection.deleteOne() 또는 db.collection.deleteMany()
+
+단일 문서 삭제: 
+db.users.deleteOne({ name: "Moon" });   // 이름이 "Moon"인 문서 중 첫 번째 문서 삭제
+
+여러 문서 삭제:
+db.users.deleteMany({ age: { $lt: 20 } });  // 나이가 20보다 작은 모든 문서 삭제  ($lt: 작다)
+
+Moongo의 기본연산자들 : 	
+
+비교연산자:
+$eq: 같다  { age: { $eq: 25 } }
+
+$ne: 같지 않다 { status: { $ne: "ACTIVE" } }
+
+$gt: 크다(초과) { age: { $gt: 25 } }
+
+$gte: 크거나 같다 { age: { $gte: 25 } }
+
+$lt: 작다(미만) { age: { $lt: 30 } }
+
+$lte: 작거나 같다 { age: { $lte: 30 } }
+
+$in: 배열에 “포함” { dept: { $in: ["SALES", "HR"] } }
+
+$nin: 배열에 “미포함” { dept: { $nin: ["TEMP", "INTERN"] } }
+
+논리연산자:
+$and: 모두 만족 { and: \[ { age: { gte: 20 } }, { age: { $lte: 30 } } ] }
+
+$or: 하나 이상 만족 { $or: [ { role: "DEV" }, { role: "DATA" } ] }
+
+$nor: 모두 불만족 { $nor: [ { status: "ACTIVE" }, { status: "PENDING" } ] }
+
+$not: 조건의 부정 { score: { not: { gte: 60 } } }
+
+존재/타입 검사: 
+$exists: 필드 존재 유무  { commission: { $exists: true } }
+
+$type: 필드 타입 검사  { age: { $type: "number" } }
+
+배열 연산:
+$all: 모든 요소 포함  { tags: { $all: ["java", "backend"] } }
+
+$size: 배열 길이  { tags: { $size: 3 } }
+
+$elemMatch: 배열 원소 중 조건 만족하는 요소 { scores: { elemMatch: { subject: "math", score: { gte: 90 } } } }
+
+갱신(Update)용 자주 쓰는 연산자:
+$set: 값 설정/수정  { $set: { status: "ACTIVE" } }
+
+$unset: 필드 제거  { $unset: { tempField: "" } }
+
+$inc: 숫자 증가/감소  { $inc: { salary: 100 } }
+
+$push: 배열에 요소 추가  { $push: { tags: "new" } }
+
+$addToSet: 배열에 “중복 없이” 추가  { $addToSet: { tags: "unique" } }
+
+$pull: 배열에서 조건에 맞는 요소 제거 { $pull: { tags: "old" } }
+
+
